@@ -1,0 +1,4 @@
+#SECRET KEY JWT
+auth/constants/config.py
+
+.DS_Store
