@@ -42,7 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework_simplejwt',
     'rest_framework',
-    'auth.apps'
+    'auth.apps',
+    'efile',
+    'principal',
+    'secretary',
+    'social_worker',
+    'school_config'
 ]
 
 MIDDLEWARE = [
