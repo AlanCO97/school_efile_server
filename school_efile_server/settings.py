@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from datetime import timedelta
+import os
 from pathlib import Path
+import sys
+from typing import List
 
 from auth.constants.config import JWT_SECRET_KEY
 
@@ -28,7 +31,9 @@ SECRET_KEY = 'django-insecure-502nl7l*$rpu9w#^6vn)p_^4w9@_o8n__&7!m369q2$aick79^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+
+HOST="http://127.0.0.1:8000"
 
 
 # Application definition
@@ -149,6 +154,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 
 ##JWT CONFIG
 SIMPLE_JWT = {
@@ -158,4 +166,86 @@ SIMPLE_JWT = {
 
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': JWT_SECRET_KEY,
+}
+
+WRITE_LOG_DEBUG:List[str] = ["console", "file"] if not DEBUG else ["console"]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname}  -module_{module} -path_ {pathname} {process:d} {thread:d} {message} {exc_info}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {pathname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'verbose',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'auth': {
+            'handlers': WRITE_LOG_DEBUG,
+            'propagate': True,
+            'level': 'INFO'
+        },
+        'secretary': {
+            'handlers': WRITE_LOG_DEBUG,
+            'propagate': True,
+            'level': 'INFO'
+        },
+        'social_worker': {
+            'handlers': WRITE_LOG_DEBUG,
+            'propagate': True,
+            'level': 'INFO'
+        },
+        'efile': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO'
+        },
+        'principal': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO'
+        },
+        'school_config': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'INFO'
+        },
+        # 'django.db.backends': {
+        #     'handlers': ['console'],
+        #     'propagate': True,
+        #     'level': 'DEBUG',
+        # },
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+
+    }
 }

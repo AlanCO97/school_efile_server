@@ -2,3 +2,7 @@
 auth/constants/config.py
 
 .DS_Store
+
+/*.log
+
+/media
