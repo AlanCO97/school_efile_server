@@ -22,7 +22,7 @@ def add_field_to_efile(model, field_name, value, instance) -> tuple:
             for field in fields:
                 if field_name in field:
                     if not fields[field]:
-                        instance[field] = value
+                        setattr(instance,field,value)
                         instance.save()
                         is_updated = True
                         break

@@ -168,7 +168,7 @@ class Tutor(models.Model):
     ine = models.FileField(upload_to=upload_to_tutor_ine)
 
     def complete_name(self) -> str:
-        return f"{self.name} {self.father_lastname} {self.father_lastname}"
+        return f"{self.name} {self.father_lastname} {self.mother_lastname}"
 
     def __str__(self) -> str:
         complete_name: str = self.complete_name()

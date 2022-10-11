@@ -6,3 +6,7 @@ auth/constants/config.py
 /*.log
 
 /media
+
+.vscode
+
+.pylintrc

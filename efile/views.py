@@ -1,16 +1,19 @@
 import logging
-from efile.models import Address, Efile, Student, Tutor
-from efile.serializers import AddressSerializer, StudentSerializer, TutorSerializer
-from efile.utils.efile_handler import EfileHandler
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.http import Http404
+
+from django.core.handlers.wsgi import WSGIRequest
 from django.db import transaction
+from django.http import Http404
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from school_config.models import EfileConfig, Employee
+
+from efile.models import Address, Efile, Student, Tutor
+from efile.serializers import (AddressSerializer, StudentSerializer,
+                               TutorSerializer)
+from efile.utils.efile_handler import EfileHandler
 from utils.permissions.permissions import validate_rol
 from utils.utils import add_field_to_efile
-
 
 log = logging.getLogger(__name__)
 
@@ -22,7 +25,7 @@ class Students(APIView):
         except Student.DoesNotExist:
             raise Http404
     
-    def get(self, request):
+    def get(self, request: WSGIRequest):
         students = Student.objects.all()
 
         student_serializer = StudentSerializer(students, many=True)
@@ -30,7 +33,7 @@ class Students(APIView):
             return Response(student_serializer.data)
         raise Http404
 
-    def post(self, request):
+    def post(self, request: WSGIRequest):
         try:
             with transaction.atomic():
                 employee: Employee = Employee.objects.get(user=request.user)
@@ -113,8 +116,11 @@ class StudentDetail(APIView):
         return Response(data={"msg": f"El alumno {student.complete_name()} ya habia sido desactivado"}, status=status.HTTP_400_BAD_REQUEST)
 
 class Tutors(APIView):
+    """
+    Class to take care of the tutors logic
+    """
     
-    def get_object(self, pk):
+    def get_object(self, pk: int):
         try:
             return Tutor.objects.get(pk=pk)
         except Tutor.DoesNotExist:
@@ -170,8 +176,7 @@ class Tutors(APIView):
                         #agregar el tutor al expediente
                         new_tutor = Tutor.objects.get(id=tutor_serializer.data.get('id'))
                         success, error = add_field_to_efile(model=Efile, field_name=type_of_contact, value=new_tutor, instance=efile)
-                        breakpoint()
-                        raise Exception('error')
+                        
                         if success:
                              return Response(data=tutor_serializer.data)
                         raise Exception(error)
